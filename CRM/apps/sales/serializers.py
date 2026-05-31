@@ -1,17 +1,25 @@
 from rest_framework import serializers
-from .models import CustomerModel, CallLogModel
+
+from .models import CallLog, Customer
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomerModel
+        model = Customer
         fields = (
+            'id',
             'first_name',
             'last_name',
             'email',
             'phone',
-            'agent_id',
+            'agent',
+            'created_at',
+            'updated_at',
         )
+        read_only_fields = ('created_at', 'updated_at')
+
 
 class CallSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CallLogModel
+        model = CallLog
         fields = '__all__'

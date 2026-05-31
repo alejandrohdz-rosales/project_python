@@ -1,25 +1,30 @@
-from rest_framework.generics import ListAPIView, UpdateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from django.contrib.auth import get_user_model
-# Serializers
-from .serializers import *
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
+
+from .models import CallLog, Customer
+from .serializers import CallSerializer, CustomerSerializer
+
 User = get_user_model()
-# Create your views here.
+
+
 class ListCustomers(ListCreateAPIView):
     serializer_class = CustomerSerializer
-    queryset = CustomerModel.objects.all()
+    queryset = Customer.objects.all()
+
 
 class CustomerDetailUpdate(RetrieveUpdateAPIView):
     serializer_class = CustomerSerializer
-    queryset = CustomerModel.objects.all()
+    queryset = Customer.objects.all()
+
 
 class FindCustomerByName(ListAPIView):
     serializer_class = CustomerSerializer
 
     def get_queryset(self):
-        name = self.kwargs['name'].capitalize()
-        queryset = CustomerModel.objects.get_customer_by_name(name)
-        return queryset
+        name = self.kwargs['name']
+        return Customer.objects.get_customers_by_name(name)
+
 
 class CallLogListCreateView(ListCreateAPIView):
     serializer_class = CallSerializer
-    queryset = CallLogModel.objects.all()
+    queryset = CallLog.objects.all()
