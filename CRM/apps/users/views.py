@@ -1,32 +1,35 @@
-from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
-from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
-from .serializers import UserSerializer
-from rest_framework.response import Response
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
-from django.contrib.auth import authenticate
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from .serializers import UserSerializer
+
 User = get_user_model()
-# Create your views here.
+
+
 class ListCreateUser(ListCreateAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
-class FindUserByUsername(ListAPIView):
+
+class FindUserByEmail(ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        username = self.kwargs['username']
-        queryset = User.objects.filter(username=username)
-        return queryset
+        email = self.kwargs['email']
+        return User.objects.filter(email__iexact=email)
+
 
 class FindUserByName(ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        name = self.kwargs['name'].capitalize()
-        queryset = User.objects.filter(first_name=name)
-        return queryset
+        name = self.kwargs['name']
+        return User.objects.filter(full_name__icontains=name)
+
 
 class UserDetailUpdate(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
@@ -42,18 +45,19 @@ class LoginUserJWT(APIView):
         if not email or not password:
             return Response(
                 {'error': 'Email and password are required'},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         user = authenticate(
-            email=email,
-            password=password
+            request,
+            username=email,
+            password=password,
         )
 
         if user is None or not user.is_active:
             return Response(
                 {'error': 'Invalid credentials'},
-                status=status.HTTP_401_UNAUTHORIZED
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         refresh = RefreshToken.for_user(user)
@@ -61,8 +65,7 @@ class LoginUserJWT(APIView):
         return Response(
             {
                 'refresh': str(refresh),
-                'access': str(refresh.access_token)
+                'access': str(refresh.access_token),
             },
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
-        
