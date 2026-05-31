@@ -10,7 +10,6 @@ class CustomerAdmin(admin.ModelAdmin):
         'last_name'
     )
 
-admin.site.unregister(User)
 
 
 @admin.register(User)

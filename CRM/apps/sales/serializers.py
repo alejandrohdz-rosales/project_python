@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import CustomerModel, User, CallLogModel
-
+from .models import CustomerModel, CallLogModel
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerModel
@@ -12,15 +11,6 @@ class CustomerSerializer(serializers.ModelSerializer):
             'agent_id',
         )
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'first_name',
-            'last_name',
-            'username',
-            'email',
-        )
 class CallSerializer(serializers.ModelSerializer):
     class Meta:
         model = CallLogModel
