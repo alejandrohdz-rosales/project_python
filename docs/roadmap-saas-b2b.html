@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM SaaS B2B — Roadmap del proyecto</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --border: #e2e8f0;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    }
+
+    .print-hint {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .print-hint strong { color: var(--accent); }
+
+    header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .meta {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      margin: 2rem 0 1rem;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text);
+    }
+
+    p { margin-bottom: 0.75rem; }
+
+    ul, ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+
+    li { margin-bottom: 0.35rem; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1rem 0;
+    }
+
+    .status-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .status-card.done { border-top: 3px solid var(--success); }
+    .status-card.pending { border-top: 3px solid var(--warning); }
+    .status-card.missing { border-top: 3px solid var(--danger); }
+
+    .status-card h3 {
+      margin-top: 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-card.done h3 { color: var(--success); }
+    .status-card.pending h3 { color: var(--warning); }
+    .status-card.missing h3 { color: var(--danger); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--accent-light);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td { background: #f1f5f9; }
+
+    .phase {
+      display: flex;
+      gap: 1rem;
+      margin: 1rem 0;
+      align-items: flex-start;
+    }
+
+    .phase-num {
+      flex-shrink: 0;
+      width: 2.2rem;
+      height: 2.2rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .phase-content {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .phase-content h3 { margin-top: 0; }
+
+    .tag {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+    }
+
+    .tag.high { background: #fef3c7; color: #b45309; }
+    .tag.critical { background: #fee2e2; color: #b91c1c; }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin: 0.75rem 0 1rem;
+    }
+
+    code {
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+
+    .flow {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      text-align: center;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 2;
+    }
+
+    .arrow { color: var(--accent); font-weight: bold; }
+
+    .highlight-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .highlight-box strong { color: #b45309; }
+
+    .answer-box {
+      background: var(--accent-light);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .answer-box ol { margin-bottom: 0; }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 1.5rem;
+      }
+      .print-hint { display: none; }
+      .phase { break-inside: avoid; }
+      h2 { break-after: avoid; }
+    }
+
+    @media (max-width: 640px) {
+      .status-grid { grid-template-columns: 1fr; }
+      body { padding: 1rem; }
+      .container { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="print-hint">
+      <strong>¿Cómo guardar como PDF?</strong> Abre este archivo en Chrome o Edge →
+      <kbd>Ctrl</kbd>+<kbd>P</kbd> → Destino: <strong>Guardar como PDF</strong> → Guardar.
+    </div>
+
+    <header>
+      <h1>CRM SaaS B2B — Roadmap del proyecto</h1>
+      <p class="subtitle">Guía de prioridades y próximos pasos de desarrollo</p>
+      <p class="meta">Proyecto: CRMProject · Fecha: 31 de mayo de 2026 · Stack: Django + DRF</p>
+    </header>
+
+    <section>
+      <h2>1. Estado actual del proyecto</h2>
+
+      <div class="status-grid">
+        <div class="status-card done">
+          <h3>✓ Completado</h3>
+          <ul>
+            <li>Modelo <code>User</code> custom (email, roles, auditoría)</li>
+            <li>App <code>users</code> con manager y migraciones</li>
+            <li>Dominio de ventas: <code>Customer</code>, <code>CallLog</code></li>
+            <li>API REST básica con Django REST Framework</li>
+            <li>Login JWT (<code>LoginUserJWT</code>)</li>
+            <li>Admin parcial configurado</li>
+          </ul>
+        </div>
+
+        <div class="status-card missing">
+          <h3>✗ Pendiente / desalineado</h3>
+          <ul>
+            <li>Vistas de usuario aún buscan <code>username</code>, <code>first_name</code></li>
+            <li>Serializers desactualizados respecto al nuevo <code>User</code></li>
+            <li>Endpoints sin protección JWT en la mayoría de rutas</li>
+            <li>Sin multi-tenancy (<code>Organization</code>)</li>
+            <li>Sin permisos por rol (<code>SALES_PERSON</code>, <code>MANAGER</code>, <code>ADMIN</code>)</li>
+            <li>Sin aislamiento de datos entre empresas</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. ¿Por qué no empezar por validaciones?</h2>
+      <p>
+        Las validaciones son importantes, pero en un SaaS B2B tienen sentido cuando ya existe
+        <strong>contexto</strong>: quién es el usuario, a qué organización pertenece y qué rol tiene.
+      </p>
+      <p>Sin ese contexto, validarías cosas como:</p>
+      <ul>
+        <li>Email único globalmente (incorrecto para B2B — debe ser único <em>por organización</em>)</li>
+        <li>Permisos sin saber si el usuario puede ver ese cliente</li>
+        <li>Reglas de negocio sin aislar datos entre empresas</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>Conclusión:</strong> Las validaciones van en la fase 5, después de auth, multi-tenancy y permisos.
+        Antes de eso, construirías reglas sobre una base incompleta.
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Roadmap por fases</h2>
+
+      <div class="phase">
+        <div class="phase-num">1</div>
+        <div class="phase-content">
+          <h3>Consolidar la base <span class="tag high">Prioridad alta</span></h3>
+          <p><strong>Estimación:</strong> 1–2 días</p>
+          <ul>
+            <li>Alinear serializers y vistas con el modelo <code>User</code> (<code>email</code>, <code>full_name</code>)</li>
+            <li>Eliminar referencias a <code>username</code>, <code>first_name</code>, <code>last_name</code></li>
+            <li>Verificar que migraciones estén aplicadas y la API arranque sin errores</li>
+            <li>Organizar URLs: usuarios en <code>apps.users</code>, ventas en <code>apps.sales</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">2</div>
+        <div class="phase-content">
+          <h3>Autenticación completa <span class="tag high">En progreso</span></h3>
+          <p>Ya tienes login JWT. Falta cerrar el flujo:</p>
+          <pre><code>POST /api/auth/login/     → JWT (access + refresh)  ✓ hecho
+POST /api/auth/refresh/   → renovar token
+GET  /api/auth/me/        → perfil del usuario autenticado
+Proteger todos los endpoints con IsAuthenticated</code></pre>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">3</div>
+        <div class="phase-content">
+          <h3>Multi-tenancy — corazón del B2B SaaS <span class="tag critical">Crítico</span></h3>
+          <p>Cada empresa cliente (tenant) debe tener sus datos completamente aislados.</p>
+          <pre><code>class Organization(models.Model):
+    name = models.CharField(max_length=150)
+    slug = models.SlugField(unique=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class User(...):
+    organization = models.ForeignKey(Organization, ...)
+
+class CustomerModel(...):
+    organization = models.ForeignKey(Organization, ...)</code></pre>
+          <p><strong>Regla de oro:</strong> todo queryset filtra por <code>organization</code> del usuario autenticado.</p>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">4</div>
+        <div class="phase-content">
+          <h3>Autorización por rol</h3>
+          <p>Ya tienes el enum <code>Role</code>. Ahora hay que usarlo en permisos DRF:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Rol</th>
+                <th>Permisos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>SALES_PERSON</code></td>
+                <td>Ver y editar solo sus clientes y llamadas</td>
+              </tr>
+              <tr>
+                <td><code>MANAGER</code></td>
+                <td>Ver clientes y llamadas de todo el equipo / organización</td>
+              </tr>
+              <tr>
+                <td><code>ADMIN</code></td>
+                <td>Gestionar usuarios de la organización</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Implementación: clases como <code>IsOrgMember</code>, <code>IsManagerOrAdmin</code>.</p>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">5</div>
+        <div class="phase-content">
+          <h3>Validaciones en contexto</h3>
+          <p>Ahora sí: validaciones con org y rol definidos.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Capa</th>
+                <th>Responsabilidad</th>
+                <th>Ejemplo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Serializer</td>
+                <td>Formato, campos requeridos</td>
+                <td>Email válido, teléfono con formato</td>
+              </tr>
+              <tr>
+                <td>Modelo</td>
+                <td>Integridad de datos</td>
+                <td><code>clean()</code>, constraints en DB</td>
+              </tr>
+              <tr>
+                <td>Servicios</td>
+                <td>Reglas de negocio complejas</td>
+                <td>Email único por org, notas obligatorias si status=connected</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">6</div>
+        <div class="phase-content">
+          <h3>Onboarding B2B</h3>
+          <ol>
+            <li>Registro de organización + primer admin</li>
+            <li>Invitación de usuarios por email</li>
+            <li>Activación de cuenta</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num">7</div>
+        <div class="phase-content">
+          <h3>Extras (cuando el core esté estable)</h3>
+          <ul>
+            <li>Facturación / planes (Stripe u otro)</li>
+            <li>Auditoría de acciones (quién cambió qué)</li>
+            <li>Notificaciones</li>
+            <li>Tests de integración</li>
+            <li>Documentación OpenAPI (drf-spectacular)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Flujo visual del roadmap</h2>
+      <div class="flow">
+        Base actual (User + Sales + JWT parcial)<br>
+        <span class="arrow">↓</span><br>
+        Fix inconsistencias API ↔ User<br>
+        <span class="arrow">↓</span><br>
+        Auth JWT completo (proteger endpoints)<br>
+        <span class="arrow">↓</span><br>
+        Organization / Multi-tenant<br>
+        <span class="arrow">↓</span><br>
+        Permisos por rol<br>
+        <span class="arrow">↓</span><br>
+        Validaciones en contexto<br>
+        <span class="arrow">↓</span><br>
+        Onboarding + invitaciones<br>
+        <span class="arrow">↓</span><br>
+        Billing + extras
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Respuesta directa</h2>
+      <div class="answer-box">
+        <p><strong>¿Qué sigue ahora?</strong></p>
+        <ol>
+          <li>Arreglar desalineación entre <code>User</code> y la API</li>
+          <li>Completar autenticación (proteger endpoints, <code>/me</code>, refresh)</li>
+          <li>Implementar multi-tenancy con <code>Organization</code></li>
+          <li>Agregar permisos por rol</li>
+          <li>Entonces: validaciones con contexto de org y rol</li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. Próximo paso concreto recomendado</h2>
+      <p>
+        Si quieres un solo objetivo claro que transforme el proyecto de "API de CRM" a
+        <strong>"CRM multi-empresa"</strong>:
+      </p>
+      <blockquote style="border-left: 4px solid var(--accent); padding-left: 1rem; margin: 1rem 0; color: var(--muted); font-style: italic;">
+        Crear el modelo <code>Organization</code>, enlazarlo a <code>User</code> y <code>Customer</code>,
+        y proteger los endpoints con JWT + filtro por organización.
+      </blockquote>
+    </section>
+
+    <footer>
+      CRMProject · Documento generado para referencia de desarrollo · CRM/CRMProject/docs/
+    </footer>
+  </div>
+</body>
+</html>
