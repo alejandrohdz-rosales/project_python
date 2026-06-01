@@ -8,6 +8,8 @@ class UserManager(BaseUserManager):
             raise ValueError('The user must have an email.')
         if not extra_fields.get('full_name'):
             raise ValueError('The user must have a full name.')
+        if not extra_fields.get('organization'):
+            raise ValueError('The user must belong to an organization.')
 
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
@@ -34,5 +36,14 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
         if password is None:
             raise ValueError('Superuser must have a password.')
+
+        if not extra_fields.get('organization'):
+            from apps.organizations.models import Organization
+
+            org, _ = Organization.objects.get_or_create(
+                slug='platform',
+                defaults={'name': 'Platform'},
+            )
+            extra_fields['organization'] = org
 
         return self._create_user(email, password, **extra_fields)

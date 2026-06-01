@@ -1,15 +1,20 @@
 from django.conf import settings
 from django.db import models
 
-from apps.users.models import AuditModel
+from apps.organizations.models import AuditModel, Organization
 
 from .managers import CustomerManager
 
 
 class Customer(AuditModel):
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='customers',
+    )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     phone = models.CharField(max_length=20, blank=True)
     agent = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -25,6 +30,12 @@ class Customer(AuditModel):
         verbose_name = 'customer'
         verbose_name_plural = 'customers'
         ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organization', 'email'],
+                name='sales_customer_org_email_unique',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

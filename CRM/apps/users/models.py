@@ -1,15 +1,9 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
+from apps.organizations.models import AuditModel, Organization
+
 from .managers import UserManager
-
-
-class AuditModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
 
 
 class User(AbstractBaseUser, AuditModel, PermissionsMixin):
@@ -24,6 +18,11 @@ class User(AbstractBaseUser, AuditModel, PermissionsMixin):
         MANAGER = 'MG', 'Manager'
         ADMIN = 'AD', 'Admin'
 
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.PROTECT,
+        related_name='users',
+    )
     email = models.EmailField('Email', unique=True)
     full_name = models.CharField('Full name', max_length=100)
     gender = models.CharField(

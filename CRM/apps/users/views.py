@@ -1,42 +1,59 @@
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.organizations.tenancy import scoped_queryset
+
+from .permissions import IsAdmin, IsAdminOrReadOnly, IsAdminOrSelf
 from .serializers import UserSerializer
 
 User = get_user_model()
 
 
-class ListCreateUser(ListCreateAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+class OrganizationScopedMixin:
+
+    def get_queryset(self):
+        return scoped_queryset(User.objects.all(), self.request.user)
 
 
-class FindUserByEmail(ListAPIView):
+class ListCreateUser(OrganizationScopedMixin, ListCreateAPIView):
     serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdmin()]
+        return [IsAdminOrReadOnly()]
+
+
+class FindUserByEmail(OrganizationScopedMixin, ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         email = self.kwargs['email']
-        return User.objects.filter(email__iexact=email)
+        return super().get_queryset().filter(email__iexact=email)
 
 
-class FindUserByName(ListAPIView):
+class FindUserByName(OrganizationScopedMixin, ListAPIView):
     serializer_class = UserSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         name = self.kwargs['name']
-        return User.objects.filter(full_name__icontains=name)
+        return super().get_queryset().filter(full_name__icontains=name)
 
 
-class UserDetailUpdate(RetrieveUpdateAPIView):
+class UserDetailUpdate(OrganizationScopedMixin, RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    permission_classes = [IsAdminOrSelf]
 
 
 class LoginUserJWT(APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request):
         email = request.data.get('email')
@@ -66,6 +83,7 @@ class LoginUserJWT(APIView):
             {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'organization_id': user.organization_id,
             },
             status=status.HTTP_200_OK,
         )

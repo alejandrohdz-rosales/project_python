@@ -5,8 +5,16 @@ from .models import CallLog, Customer
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email', 'agent', 'created_at')
-    list_filter = ('agent',)
+    list_display = (
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'organization',
+        'agent',
+        'created_at',
+    )
+    list_filter = ('organization', 'agent')
     search_fields = ('first_name', 'last_name', 'email')
     ordering = ('-created_at',)
 

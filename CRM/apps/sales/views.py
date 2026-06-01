@@ -1,30 +1,42 @@
-from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 
 from .models import CallLog, Customer
+from .permissions import (
+    IsCustomerOwnerOrManager,
+    calls_for_user,
+    customers_for_user,
+)
 from .serializers import CallSerializer, CustomerSerializer
 
-User = get_user_model()
+
+class CustomerQuerysetMixin:
+
+    def get_queryset(self):
+        return customers_for_user(self.request.user)
 
 
-class ListCustomers(ListCreateAPIView):
+class ListCustomers(CustomerQuerysetMixin, ListCreateAPIView):
     serializer_class = CustomerSerializer
-    queryset = Customer.objects.all()
 
 
-class CustomerDetailUpdate(RetrieveUpdateAPIView):
+class CustomerDetailUpdate(CustomerQuerysetMixin, RetrieveUpdateAPIView):
     serializer_class = CustomerSerializer
-    queryset = Customer.objects.all()
+    permission_classes = [IsCustomerOwnerOrManager]
 
 
-class FindCustomerByName(ListAPIView):
+class FindCustomerByName(CustomerQuerysetMixin, ListAPIView):
     serializer_class = CustomerSerializer
 
     def get_queryset(self):
         name = self.kwargs['name']
-        return Customer.objects.get_customers_by_name(name)
+        return super().get_queryset().filter(
+            Q(first_name__icontains=name) | Q(last_name__icontains=name)
+        )
 
 
 class CallLogListCreateView(ListCreateAPIView):
     serializer_class = CallSerializer
-    queryset = CallLog.objects.all()
+
+    def get_queryset(self):
+        return calls_for_user(self.request.user)
