@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.organizations.tenancy import scoped_queryset
 
-from .permissions import IsAdmin, IsAdminOrReadOnly, IsAdminOrSelf
+from .permissions import IsAdmin, IsAdminOrReadOnly, IsAdminOrSelf, IsAdminOrManager
 from .serializers import UserSerializer
 
 User = get_user_model()
@@ -26,8 +26,7 @@ class ListCreateUser(OrganizationScopedMixin, ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == 'POST':
             return [IsAdmin()]
-        return [IsAdminOrReadOnly()]
-
+        return [IsAdminOrManager()]
 
 class FindUserByEmail(OrganizationScopedMixin, ListAPIView):
     serializer_class = UserSerializer
