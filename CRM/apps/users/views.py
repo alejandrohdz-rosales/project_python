@@ -78,7 +78,7 @@ class UserDetailUpdate(OrganizationScopedMixin, RetrieveUpdateAPIView):
         if obj.pk == user.pk:
             return MeUserWriteSerializer
 
-        return AdminUserWriteSerializer
+        return UserWriteSerializer
 
 class MeUserView(ReadWriteSerializerMixin, RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
@@ -86,4 +86,43 @@ class MeUserView(ReadWriteSerializerMixin, RetrieveUpdateAPIView):
     write_serializer_class = MeUserWriteSerializer
 
     def get_object(self):
-        return self.request.user
+        obj = self.request.user
+        self.check_object_permissions(self.request, obj)
+        return obj
+    
+
+class LoginUserJWT(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response(
+                {'error': 'Email and password are required'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = authenticate(
+            request,
+            username=email,
+            password=password,
+        )
+
+        if user is None or not user.is_active:
+            return Response(
+                {'error': 'Invalid credentials'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+            {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'organization_id': user.organization_id,
+            },
+            status=status.HTTP_200_OK,
+        )
