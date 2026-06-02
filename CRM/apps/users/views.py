@@ -62,11 +62,23 @@ class FindUserByName(OrganizationScopedMixin, ListAPIView):
         return super().get_queryset().filter(full_name__icontains=name)
 
 
-class UserDetailUpdate(OrganizationScopedMixin, ReadWriteSerializerMixin, RetrieveUpdateAPIView):
-    read_serializer_class = UserReadSerializer
-    write_serializer_class = UserWriteSerializer
+class UserDetailUpdate(OrganizationScopedMixin, RetrieveUpdateAPIView):
     permission_classes = [IsAdminOrSelf]
 
+    def get_serializer_class(self):
+        if self.request.method in ['GET', 'HEAD', 'OPTIONS']:
+            return UserReadSerializer
+
+        obj = self.get_object()
+        user = self.request.user
+
+        if user.is_superuser or user.role == User.Role.ADMIN:
+            return AdminUserWriteSerializer
+
+        if obj.pk == user.pk:
+            return MeUserWriteSerializer
+
+        return AdminUserWriteSerializer
 
 class MeUserView(ReadWriteSerializerMixin, RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
