@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from apps.organizations.tenancy import scoped_queryset
 
 from .permissions import IsAdmin, IsAdminOrReadOnly, IsAdminOrSelf, IsAdminOrManager
-from .serializers import UserReadSerializer, UserWriteSerializer
+from .serializers import UserReadSerializer, UserWriteSerializer, MeUserWriteSerializer
 
 User = get_user_model()
 
@@ -71,7 +71,7 @@ class UserDetailUpdate(OrganizationScopedMixin, ReadWriteSerializerMixin, Retrie
 class MeUserView(ReadWriteSerializerMixin, RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     read_serializer_class = UserReadSerializer
-    write_serializer_class = UserWriteSerializer
+    write_serializer_class = MeUserWriteSerializer
 
     def get_object(self):
         return self.request.user
