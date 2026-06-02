@@ -1,0 +1,4 @@
+docs/
+CRM/secrets.json
+*.pyc
+__pycache__/

@@ -1,26 +1,27 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
-from .models import CustomerModel, CallLogModel
-# Register your models here.
+
+from .models import CallLog, Customer
+
+
+@admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'first_name',
-        'last_name'
-    )
-
-
-
-@admin.register(User)
-class CustomUserAdmin(UserAdmin):
-    list_display = (
-        'id',
-        'username',
-        'email',
-        'first_name',
         'last_name',
-        'is_staff',
+        'email',
+        'organization',
+        'agent',
+        'created_at',
     )
-admin.site.register(CustomerModel, CustomerAdmin)
-admin.site.register(CallLogModel)
+    list_filter = ('organization', 'agent')
+    search_fields = ('first_name', 'last_name', 'email')
+    ordering = ('-created_at',)
+
+
+@admin.register(CallLog)
+class CallLogAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'agent', 'status', 'call_date')
+    list_filter = ('status', 'call_date')
+    search_fields = ('customer__first_name', 'customer__last_name', 'notes')
+    ordering = ('-call_date',)
