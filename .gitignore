@@ -3,3 +3,4 @@ CRM/secrets.json
 *.pyc
 __pycache__/
 requirements.txt
+.idea/
