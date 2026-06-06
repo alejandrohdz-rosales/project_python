@@ -73,7 +73,7 @@ class UserDetailUpdate(OrganizationScopedMixin, RetrieveUpdateAPIView):
         user = self.request.user
 
         if user.is_superuser or user.role == User.Role.ADMIN:
-            return AdminUserWriteSerializer
+            return UserWriteSerializer
 
         if obj.pk == user.pk:
             return MeUserWriteSerializer
